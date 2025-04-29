@@ -16,7 +16,7 @@ C = np.array([1, 0, 0])   # clima: sol (one-hot)
 
 # Coeficientes base
 alpha_F, alpha_EI, alpha_ES, alpha_IL = 0.015, 0.40, 0.50, 0.60
-beta_C,  beta_QP, beta_FL, beta_QV    = 0.02,  0.0015, 0.30, 0.002
+beta_C,  beta_QP, beta_FL, beta_QV, beta_EI = 0.02,  0.0015, 0.30, 0.002, 0.40
 
 # Inicio de simulación a las 08:00 h (env.now=0 => 08:00)
 SIM_START = 8 * 60  # minutos desde medianoche
@@ -40,7 +40,7 @@ def R_pujada(F, EI, IL):
 
 def R_baixada(EI, FL):
     clima = beta_C * (C @ np.arange(1, len(C)+1))
-    raw   = clima + beta_QP*(QV*P) + beta_FL*FL + beta_QV*QV
+    raw   = clima + beta_QP*(QV*P) + beta_FL*FL + beta_QV*QV + beta_EI*EI
     return raw
 
 # ---------- 3. LISTA COMPLETA DE ESTACIONES R4 ----------
