@@ -10,26 +10,26 @@ from scipy.stats import norm
 
 # ---------- 1. Definición de estaciones y parámetros nominales ----------
 STATIONS = [
-    # idx, nombre,                  EI, FL, IL,   PF (pop_ratio)
-    ( 0, "Sant Vicenç de Calders",   1, 0, 1,   0.03),
-    ( 1, "El Vendrell",              0, 0, 0,   0.41),
-    ( 2, "L'Arboç",                  0, 0, 0,   0.07),
-    ( 3, "Els Monjos",               0, 0, 0,   0.16),
-    ( 4, "Vilafranca del Penedès",   1, 0, 0,   0.45),
-    ( 5, "La Granada",               0, 0, 0,   0.05),
-    ( 6, "La Pobla de Claramunt",    0, 0, 0,   0.11),
-    ( 7, "Sant Sadurní d'Anoia",     0, 0, 0,   0.13),
-    ( 8, "Gelida",                   0, 0, 0,   0.09),
-    ( 9, "Martorell",                1, 0, 0,   0.29),
-    (10, "Castellbisbal",            1, 0, 0,   0.14),
-    (11, "El Papiol",                0, 0, 0,   0.08),
-    (12, "Molins de Rei",            0, 0, 0,   0.29),
-    (13, "Sant Feliu de Llobregat",  0, 0, 0,   0.52),
-    (14, "Sant Joan Despí",          0, 0, 0,   0.31),
-    (15, "Cornellà",                 0, 0, 0,   1.00)
+    # idx, nombre,                    EI, FL, IL,   PF (pop_ratio)
+    ( 0, "Sant Vicenç de Calders",      1, 0, 1,   2259/88500),   # ≈0.03
+    ( 1, "El Vendrell",                 0, 0, 0,   36230/88500),  # ≈0.41
+    ( 2, "L'Arboç",                     0, 0, 0,    6524/88500),  # ≈0.07
+    ( 3, "Els Monjos",                  0, 0, 0,   13800/88500),  # ≈0.16
+    ( 4, "Vilafranca del Penedès",      1, 0, 0,   40000/88500),  # ≈0.45
+    ( 5, "La Granada",                  0, 0, 0,    4000/88500),  # ≈0.05
+    ( 6, "La Pobla de Claramunt",       0, 0, 0,    9885/88500),  # ≈0.11
+    ( 7, "Sant Sadurní d'Anoia",        0, 0, 0,   11874/88500),  # ≈0.13
+    ( 8, "Gelida",                      0, 0, 0,    8120/88500),  # ≈0.09
+    ( 9, "Martorell",                   1, 0, 0,   26106/88500),  # ≈0.29
+    (10, "Castellbisbal",               1, 0, 0,   12000/88500),  # ≈0.14
+    (11, "El Papiol",                   0, 0, 0,    7500/88500),  # ≈0.08
+    (12, "Molins de Rei",               0, 0, 0,   26000/88500),  # ≈0.29
+    (13, "Sant Feliu de Llobregat",     0, 0, 0,   46000/88500),  # ≈0.52
+    (14, "Sant Joan Despí",             0, 0, 0,   27500/88500),  # ≈0.31
+    (15, "Cornellà",                    0, 0, 0,   88500/88500)   # =1.00
 ]
 
-CV, QV, P     = 43, 6, 3                   # plazas/vagón, vagones, puertas
+CV, QV, P    = 43, 6, 3                   # plazas/vagón, vagones, puertas
 M             = CV * QV
 DT_DWELL      = 1.0
 SEG_TIME      = 4.0
@@ -116,7 +116,6 @@ df_stats = pd.DataFrame({
 })
 
 print(df_stats)
-
 
 # ---------- 5. Gráfica de incertidumbre ----------
 x = np.arange(len(station_names))

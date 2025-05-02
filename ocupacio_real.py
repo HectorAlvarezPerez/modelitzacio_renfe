@@ -111,6 +111,7 @@ for i, est in enumerate(route_stations):
     records.append((est, h_str, up_tot, dn_tot, pujan, baixen, ocup))
 
 # -------- 4. Tabla y gráfica -------------------------------------
+
 cols = ["Estació","Hora","Suben_tot","Bajan_tot","Suben_nuestro",
         "Bajan_nuestro","Ocupación"]
 df_route = pd.DataFrame(records, columns=cols)
@@ -125,3 +126,11 @@ plt.title("Ocupación estimada para nuestro R4 (08:00 – 09:17)")
 plt.grid(ls=":", alpha=.6)
 plt.tight_layout()
 plt.show()
+
+# -------- 4. Función para importar -------------------------------------
+def calcular_ocupacion_real():
+    from pathlib import Path
+    if not Path("./dades/dades_R4_ordenades_prova.csv").exists():
+        raise FileNotFoundError("Falta el archivo 'dades_R4_ordenades_prova.csv'")
+    
+    return df_route["Ocupación"].tolist()

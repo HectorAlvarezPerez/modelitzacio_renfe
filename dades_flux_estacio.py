@@ -5,7 +5,7 @@ import numpy as np
 import os 
 
 # Cargar datos
-df = pd.read_csv("dades_R4_ordenades_prova.csv", sep=";")
+df = pd.read_csv("./dades/dades_R4_ordenades_prova.csv", sep=";")
 
 # Calcular cambio de ocupación (sin .diff)
 df["VEL_OCUPACION"] = df["VIAJEROS_SUBIDOS"] - df["VIAJEROS_BAJADOS"]
