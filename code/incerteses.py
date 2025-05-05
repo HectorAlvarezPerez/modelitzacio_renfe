@@ -35,11 +35,16 @@ DT_DWELL      = 1.0
 SEG_TIME      = 4.0
 SIM_START     = 8 * 60
 
+
+# FALTA POSAR PARAMETRES OPTIMS
 nominal = {
     'alpha_F':  0.015,
     'alpha_EI': 0.40,
     'alpha_IL': 0.60,
-    'alpha_ES': 0.50,
+    'alpha_ES': 1.2,
+    'alpha_T':  1.1,
+    'beta_C':   0.02,
+    'beta_EI':  0.001,
     'beta_QP':  0.0015,
     'beta_FL':  0.30,
     'beta_QV':  0.002
@@ -54,13 +59,18 @@ def commute_multiplier(t_abs):
     return 1.0, 1.0
 
 def run_once(params):
-    aF, aEI, aIL, aES = params['alpha_F'], params['alpha_EI'], params['alpha_IL'], params['alpha_ES']
-    bQP, bFL, bQV     = params['beta_QP'], params['beta_FL'], params['beta_QV']
+    aF, aEI, aIL, aES, aT = params['alpha_F'], params['alpha_EI'], params['alpha_IL'], params['alpha_ES'], params['alpha_T']
+    bQP, bFL, bQV, bEI, bC = params['beta_QP'], params['beta_FL'], params['beta_QV'], params['beta_EI'], params['beta_C']
+    clima = {
+        "sunny": 1.0,
+        "rain": 1.2,
+        "cloudy": 1.1
+    }
 
     def R_pujada(F, EI, IL):
-        return max(0, aF*F + aEI*EI + aIL*IL + aES*0)
+        return max(0, (aF*F + aEI*EI + aIL*IL)*aES*aT)
     def R_baixada(EI, FL):
-        return max(0, bQP*(QV*P) + bFL*FL + bQV*QV)
+        return max(0, bC*clima['sunny'] + bQP*(QV*P) + bFL*FL + bQV*QV + bEI*EI)
 
     env  = simpy.Environment()
     ocup = simpy.Container(env, capacity=M, init=0)

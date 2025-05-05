@@ -8,7 +8,7 @@ from sklearn.metrics import mean_squared_error
 from simulacion_clases import run_simulacion
 from ocupacio_real import calcular_ocupacion_real
 
-ALPHA_KEYS = ["alpha_F", "alpha_EI", "alpha_IL", "alpha_ES"]
+ALPHA_KEYS = ["alpha_F", "alpha_EI", "alpha_IL", "alpha_ES", "alpha_T"]
 BETA_KEYS  = ["beta_C", "beta_QP", "beta_FL", "beta_QV", "beta_EI"]
 
 # ------------------ Función objetivo ------------------

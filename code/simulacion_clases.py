@@ -17,8 +17,8 @@ class SimulationContext:
 
     weather_factors = {
         "sunny": 1.0,
-        "rain": 0.8,
-        "cloudy": 0.9
+        "rain": 1.2,
+        "cloudy": 1.1
     }
 
     def is_peak(self, absolute_minute):
@@ -80,16 +80,14 @@ class Train:
 
 
     # coeficientes base
-    alpha_F, alpha_EI, alpha_ES, alpha_IL = 1.74382, 0.00010, 0.00010, 0.1  # 0.015, 0.40, 0.50, 0.60
+    alpha_F, alpha_EI, alpha_ES, alpha_IL, alpha_T = 1.74382, 0.00010, 1.2, 0.1, 1.1  # 0.015, 0.40, 1.2, 0.60, 1.1 
     beta_C, beta_QP, beta_FL, beta_QV, beta_EI = 0.01264, 0.00010, 0.1, 0.00658, 0.03510  # 0.02, 0.0015, 0.30, 0.002, 0,001
 
     def __init__(self, context: SimulationContext):
         self.context = context
 
     def R_up(self, F, EI, IL):
-        factor_event = 1.2 if self.context.special_event else 1.0
-        factor_tariff = 1.1 if self.context.special_tariff else 1.0
-        return (self.alpha_F*F + self.alpha_EI*EI + self.alpha_IL*IL) * factor_event * factor_tariff
+        return (self.alpha_F*F + self.alpha_EI*EI + self.alpha_IL*IL) * self.alpha_ES * self.alpha_T
 
     def R_dn(self, EI, FL):
         clima_factor = self.beta_C * self.context.get_weather_factor()
@@ -175,7 +173,7 @@ def run_simulacion(alphas, betas):
 
     train = Train(context)
 
-    train.alpha_F, train.alpha_EI, train.alpha_IL, train.alpha_ES = alphas
+    train.alpha_F, train.alpha_EI, train.alpha_IL, train.alpha_ES, train.alpha_T = alphas
     train.beta_C, train.beta_QP, train.beta_FL, train.beta_QV, train.beta_EI = betas
 
     try:

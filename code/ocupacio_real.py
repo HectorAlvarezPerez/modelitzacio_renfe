@@ -87,7 +87,7 @@ def w_up(i): return max(0.3, 1 - i/(N-1))
 def w_dn(i): return max(0.3, (1 - w_up(i)))
 
 # -------- 3. Cargar CSV de conteos -------------------------------
-df = pd.read_csv("dades_R4_ordenades_prova.csv", sep=";")
+df = pd.read_csv("../dades/dades_R4_ordenades_prova.csv", sep=";")
 df["HORA_STR"] = df["TRAMO_HORARIO"]
 
 records, ocup = [], 0
@@ -129,8 +129,8 @@ plt.show()
 
 # -------- 4. Función para importar -------------------------------------
 def calcular_ocupacion_real():
-    from pathlib import Path
-    if not Path("./dades/dades_R4_ordenades_prova.csv").exists():
-        raise FileNotFoundError("Falta el archivo 'dades_R4_ordenades_prova.csv'")
+    # from pathlib import Path
+    # if not Path("./dades/dades_R4_ordenades_prova.csv").exists():
+    #     raise FileNotFoundError("Falta el archivo 'dades_R4_ordenades_prova.csv'")
     
     return df_route["Ocupación"].tolist()
