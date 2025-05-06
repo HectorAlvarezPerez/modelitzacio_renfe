@@ -80,18 +80,18 @@ class Train:
 
 
     # coeficientes base
-    alpha_F, alpha_EI, alpha_ES, alpha_IL, alpha_T = 1.74382, 0.00010, 1.2, 0.1, 1.1  # 0.015, 0.40, 1.2, 0.60, 1.1 
-    beta_C, beta_QP, beta_FL, beta_QV, beta_EI = 0.01264, 0.00010, 0.1, 0.00658, 0.03510  # 0.02, 0.0015, 0.30, 0.002, 0,001
+    alpha_F, alpha_EI, alpha_ES, alpha_IL, alpha_T, extra_alpha = 0.015, 0.40, 1.2, 0.60, 1.1 , 1
+    beta_C, beta_QP, beta_FL, beta_QV, beta_EI, extra_beta = 0.02, 0.0015, 0.30, 0.002, 0.01, 1
 
     def __init__(self, context: SimulationContext):
         self.context = context
 
     def R_up(self, F, EI, IL):
-        return (self.alpha_F*F + self.alpha_EI*EI + self.alpha_IL*IL) * self.alpha_ES * self.alpha_T
+        return (self.alpha_F*F + self.alpha_EI*EI + self.alpha_IL*IL) * self.alpha_ES * self.alpha_T * self.extra_alpha
 
     def R_dn(self, EI, FL):
         clima_factor = self.beta_C * self.context.get_weather_factor()
-        return clima_factor + self.beta_QP*(self.QV*self.P) + self.beta_FL*FL + self.beta_QV*self.QV + self.beta_EI*EI
+        return (clima_factor + self.beta_QP*(self.QV*self.P) + self.beta_FL*FL + self.beta_QV*self.QV + self.beta_EI*EI) * self.extra_beta
 
 # ------------------------------ 4. SIMULADOR OOP ------------------------------
 class LineSimulation:
@@ -113,9 +113,9 @@ class LineSimulation:
             current_time = ctx.start_time + env.now
             is_peak = ctx.is_peak(current_time)
             frequency = get_frequency(station.idx, is_peak)
-            
+
             # calcular tasas
-            up_rate = t.R_up(60/frequency, station.EI, station.IL) * station.PF
+            up_rate = t.R_up((60/frequency)/8, station.EI, station.IL) * station.PF # is min minutes between trains
             dn_rate = t.R_dn(station.EI, station.FL) * station.PF
 
             # modificar por hora punta
@@ -143,7 +143,7 @@ if __name__ == "__main__":
     context = SimulationContext(
         start_time=8*60,       # 08:00
         weather="sunny",        # "sunny", "rain", "cloudy"
-        special_tariff=True,   
+        special_tariff=False,   
         special_event=False
     )
 
@@ -166,15 +166,15 @@ if __name__ == "__main__":
 def run_simulacion(alphas, betas):
     context = SimulationContext(
         start_time=8*60,
-        weather="rain",
-        special_tariff=True,   
+        weather="sun",
+        special_tariff=False,   
         special_event=False
     )
 
     train = Train(context)
 
-    train.alpha_F, train.alpha_EI, train.alpha_IL, train.alpha_ES, train.alpha_T = alphas
-    train.beta_C, train.beta_QP, train.beta_FL, train.beta_QV, train.beta_EI = betas
+    train.alpha_F, train.alpha_EI, train.alpha_IL, train.alpha_ES, train.alpha_T, train.extra_alpha = alphas
+    train.beta_C, train.beta_QP, train.beta_FL, train.beta_QV, train.beta_EI, train.extra_beta = betas
 
     try:
         sim = LineSimulation(STATIONS, train)

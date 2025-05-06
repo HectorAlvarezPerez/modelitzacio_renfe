@@ -4,12 +4,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import minimize
 from sklearn.metrics import mean_squared_error
+from scipy.optimize import differential_evolution
+
 
 from simulacion_clases import run_simulacion
 from ocupacio_real import calcular_ocupacion_real
 
-ALPHA_KEYS = ["alpha_F", "alpha_EI", "alpha_IL", "alpha_ES", "alpha_T"]
-BETA_KEYS  = ["beta_C", "beta_QP", "beta_FL", "beta_QV", "beta_EI"]
+ALPHA_KEYS = ["alpha_F", "alpha_EI", "alpha_IL", "alpha_ES", "alpha_T", "extra_alpha"]
+BETA_KEYS  = ["beta_C", "beta_QP", "beta_FL", "beta_QV", "beta_EI", "extra_beta"]
 
 # ------------------ Función objetivo ------------------
 
@@ -37,9 +39,10 @@ def funcion_objetivo(params):
 
 def ajustar_parametros():
     x0 = [0.1] * (len(ALPHA_KEYS) + len(BETA_KEYS))
-    bounds = [(0.0001, 2.0)] * len(x0)
+    bounds = [(0, 5)] * len(x0)
 
     print("Iniciando optimización...")
+
     res = minimize(funcion_objetivo, x0, method="L-BFGS-B", bounds=bounds)
 
     if res.success:
