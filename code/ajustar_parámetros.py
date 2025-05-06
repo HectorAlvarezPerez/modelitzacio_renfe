@@ -4,14 +4,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import minimize
 from sklearn.metrics import mean_squared_error
-from scipy.optimize import differential_evolution
 
 
 from simulacion_clases import run_simulacion
 from ocupacio_real import calcular_ocupacion_real
 
 ALPHA_KEYS = ["alpha_F", "alpha_EI", "alpha_IL", "alpha_ES", "alpha_T", "extra_alpha"]
-BETA_KEYS  = ["beta_C", "beta_QP", "beta_FL", "beta_QV", "beta_EI", "extra_beta"]
+BETA_KEYS  = ["beta_C", "beta_QP", "beta_FL", "beta_EI", "extra_beta"]
 
 # ------------------ Función objetivo ------------------
 
@@ -22,7 +21,6 @@ def funcion_objetivo(params):
 
     try:
         ocup_sim = run_simulacion(alphas, betas)
-
     except Exception as e:
         print("Fin de la simulación:", e)
         return 1e6

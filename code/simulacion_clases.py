@@ -81,7 +81,7 @@ class Train:
 
     # coeficientes base
     alpha_F, alpha_EI, alpha_ES, alpha_IL, alpha_T, extra_alpha = 0.015, 0.40, 1.2, 0.60, 1.1 , 1
-    beta_C, beta_QP, beta_FL, beta_QV, beta_EI, extra_beta = 0.02, 0.0015, 0.30, 0.002, 0.01, 1
+    beta_C, beta_QP, beta_FL, beta_EI, extra_beta = 0.02, 0.0015, 0.30, 0.01, 1
 
     def __init__(self, context: SimulationContext):
         self.context = context
@@ -91,7 +91,7 @@ class Train:
 
     def R_dn(self, EI, FL):
         clima_factor = self.beta_C * self.context.get_weather_factor()
-        return (clima_factor + self.beta_QP*(self.QV*self.P) + self.beta_FL*FL + self.beta_QV*self.QV + self.beta_EI*EI) * self.extra_beta
+        return (clima_factor + self.beta_QP*(self.QV*self.P) + self.beta_FL*FL + self.beta_EI*EI) * self.extra_beta
 
 # ------------------------------ 4. SIMULADOR OOP ------------------------------
 class LineSimulation:
@@ -115,7 +115,7 @@ class LineSimulation:
             frequency = get_frequency(station.idx, is_peak)
 
             # calcular tasas
-            up_rate = t.R_up((60/frequency)/8, station.EI, station.IL) * station.PF # is min minutes between trains
+            up_rate = t.R_up((60/frequency), station.EI, station.IL) * station.PF # is min minutes between trains
             dn_rate = t.R_dn(station.EI, station.FL) * station.PF
 
             # modificar por hora punta
@@ -134,8 +134,8 @@ class LineSimulation:
 
     def run(self):
         self.env.process(self.process_train(self.env))
-        total_time = len(self.stations) * (self.train.SEG_TIME + self.train.DT_DWELL) + 10
-        self.env.run(until=total_time)
+        # total_time = len(self.stations) * (self.train.SEG_TIME + self.train.DT_DWELL) + 10
+        self.env.run()
         return pd.DataFrame(self.history, columns=["min", "station", "O"])
 
 # ------------------------------ 5. EJECUCIÓN Y PLOT ------------------------------
@@ -174,7 +174,7 @@ def run_simulacion(alphas, betas):
     train = Train(context)
 
     train.alpha_F, train.alpha_EI, train.alpha_IL, train.alpha_ES, train.alpha_T, train.extra_alpha = alphas
-    train.beta_C, train.beta_QP, train.beta_FL, train.beta_QV, train.beta_EI, train.extra_beta = betas
+    train.beta_C, train.beta_QP, train.beta_FL, train.beta_EI, train.extra_beta = betas
 
     try:
         sim = LineSimulation(STATIONS, train)
