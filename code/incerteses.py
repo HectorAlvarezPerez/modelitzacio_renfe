@@ -158,7 +158,7 @@ class MonteCarloSimulation:
         
         # Verificar que todas las estaciones estén en el historial
         if len(history) != len(self.stations):
-            print(f"ADVERTENCIA: El historial tiene {len(history)} registros pero hay {len(self.stations)} estaciones")
+            # print(f"ADVERTENCIA: El historial tiene {len(history)} registros pero hay {len(self.stations)} estaciones")
             # Si falta alguna estación, completamos con el último valor conocido o cero
             if len(history) < len(self.stations):
                 last_level = history[-1][2] if history else 0
@@ -171,18 +171,19 @@ class MonteCarloSimulation:
 # ------------------------------ 5. ANÁLISIS DE MONTE CARLO ------------------------------
 def run_monte_carlo_analysis(n_sims=10000):
     # Definir parámetros nominales basados en el modelo de simulacion_clases.py
+
     nominal = {
-        'alpha_F': 0.96819,
-        'alpha_EI': 0.31339,
-        'alpha_IL': 0.22120,
-        'alpha_ES': 1.06358,
-        'alpha_T': 1.06358,
-        'extra_alpha': 1.06358,
-        'beta_C': 0.08999,
-        'beta_QP': 0.01902,
+        'alpha_F': 0.34606,
+        'alpha_EI': 1.43527,
+        'alpha_ES': 1.35071,
+        'alpha_IL': 0.93269,
+        'alpha_T': 0.93269,
+        'extra_alpha': 0.93269,
+        'beta_C': 0.26119,
+        'beta_QP': 0.0,
         'beta_FL': 0.10000,
-        'beta_EI': 0.29517,
-        'extra_beta': 0.11893
+        'beta_EI': 0.67248,
+        'extra_beta': 0.11480,
     }
     
     # Crear distribuciones de incertidumbre (20% de variación)
@@ -205,7 +206,7 @@ def run_monte_carlo_analysis(n_sims=10000):
         
         # Verificar que la dimensión coincide
         if len(result_values) != len(STATIONS):
-            print(f"ADVERTENCIA: La simulación devolvió {len(result_values)} valores pero hay {len(STATIONS)} estaciones")
+            # print(f"ADVERTENCIA: La simulación devolvió {len(result_values)} valores pero hay {len(STATIONS)} estaciones")
             # Rellenar con ceros si falta algún valor
             if len(result_values) < len(STATIONS):
                 result_values = np.pad(result_values, (0, len(STATIONS) - len(result_values)), 'constant')
@@ -248,7 +249,7 @@ def plot_uncertainty(df_stats):
 # ------------------------------ 7. EJECUCIÓN PRINCIPAL ------------------------------
 if __name__ == "__main__":
     # Ejecutar análisis de Monte Carlo con menos simulaciones para pruebas
-    df_stats, results = run_monte_carlo_analysis(n_sims=100)
+    df_stats, results = run_monte_carlo_analysis(n_sims=1000)
     print(df_stats)
     plot_uncertainty(df_stats)
     

@@ -1,5 +1,4 @@
 # ajustar_parametros.py
-
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import minimize
@@ -86,3 +85,4 @@ if __name__ == "__main__":
     ocup_real = calcular_ocupacion_real()
 
     graficar_resultados(ocup_real, ocup_sim)
+    

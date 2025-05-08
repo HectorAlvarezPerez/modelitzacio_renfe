@@ -4,11 +4,12 @@
 # -------------------------------------------------
 import simpy, numpy as np, pandas as pd, matplotlib.pyplot as plt
 from dataclasses import dataclass
+from ocupacio_real import ocupacio_inicial, calcular_ocupacion_real
 
 # ------------------------------ 1. CONTEXTO Y CONFIGURACIÓN ------------------------------
 @dataclass
 class SimulationContext:
-    start_time: int = 8*60  # minutos desde medianoche (ej: 8:00h)
+    start_time: int = 19*60  # minutos desde medianoche (ej: 8:00h)
     weather: str = "sunny"  # sunny, rain, cloudy
     special_tariff: bool = False
     special_event: bool = False
@@ -80,8 +81,8 @@ class Train:
 
 
     # coeficientes base
-    alpha_F, alpha_EI, alpha_ES, alpha_IL, alpha_T, extra_alpha = 0.015, 0.40, 1.2, 0.60, 1.1 , 1
-    beta_C, beta_QP, beta_FL, beta_EI, extra_beta = 0.02, 0.0015, 0.30, 0.01, 1
+    alpha_F, alpha_EI, alpha_ES, alpha_IL, alpha_T, extra_alpha = 0.34606, 1.43527, 1.35071, 0.93269, 0.93269, 0.93269
+    beta_C, beta_QP, beta_FL, beta_EI, extra_beta = 0.26119, 0.0, 0.1000, 0.67248, 0.11480
 
     def __init__(self, context: SimulationContext):
         self.context = context
@@ -99,7 +100,7 @@ class LineSimulation:
         self.stations = stations
         self.train = train
         self.env = simpy.Environment()
-        self.occup = simpy.Container(self.env, capacity=train.M, init=0)
+        self.occup = simpy.Container(self.env, capacity=train.M, init=ocupacio_inicial)
         self.history = []  # (min, station, O)
 
     def process_train(self, env):
@@ -150,6 +151,7 @@ if __name__ == "__main__":
     train = Train(context)
     sim = LineSimulation(STATIONS, train)
     df = sim.run()
+    ocup_real = calcular_ocupacion_real()
 
     x = np.arange(len(df))
     plt.figure(figsize=(12,5))
@@ -159,6 +161,19 @@ if __name__ == "__main__":
     plt.ylabel("Ocupación (personas)")
     plt.title(f"Ocupación por parada — {context.weather.capitalize()} / Tarifa especial: {context.special_tariff} / Evento: {context.special_event}")
     plt.grid(ls=":", alpha=0.6)
+    plt.tight_layout()
+    plt.show()
+
+    #graficar_resultados(df["0", ocup_real])
+    estaciones = list(range(1, len(ocup_real) + 1))
+    plt.figure(figsize=(10, 5))
+    plt.plot(estaciones, ocup_real, marker="o", label="Ocupación real", linewidth=2)
+    plt.plot(estaciones, df["O"], marker="s", label="Ocupación simulada", linewidth=2)
+    plt.xlabel("Estaciones")
+    plt.ylabel("Ocupación")
+    plt.title("Comparación de ocupación real vs simulada")
+    plt.legend()
+    plt.grid(True)
     plt.tight_layout()
     plt.show()
 

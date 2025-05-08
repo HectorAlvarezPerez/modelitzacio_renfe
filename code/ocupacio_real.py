@@ -90,6 +90,13 @@ def w_dn(i): return max(0.3, (1 - w_up(i)))
 df = pd.read_csv("../dades/dades_R4_ordenades_prova.csv", sep=";")
 df["HORA_STR"] = df["TRAMO_HORARIO"]
 
+filtrats = df[
+    (df["NOMBRE_ESTACION"] == "sant vicenc de calders") &
+    (df["VIAJEROS_SUBIDOS"] > 0)
+]
+
+ocupacio_inicial = filtrats["VIAJEROS_SUBIDOS"].mean()
+
 records, ocup = [], 0
 print(df["HORA_STR"])
 for i, est in enumerate(route_stations):
@@ -127,10 +134,11 @@ plt.grid(ls=":", alpha=.6)
 plt.tight_layout()
 plt.show()
 
+
 # -------- 4. Función para importar -------------------------------------
 def calcular_ocupacion_real():
-    # from pathlib import Path
-    # if not Path("./dades/dades_R4_ordenades_prova.csv").exists():
-    #     raise FileNotFoundError("Falta el archivo 'dades_R4_ordenades_prova.csv'")
+    from pathlib import Path
+    if not Path("../dades/dades_R4_ordenades_prova.csv").exists():
+        raise FileNotFoundError("Falta el archivo 'dades_R4_ordenades_prova.csv'")
     
     return df_route["Ocupación"].tolist()
